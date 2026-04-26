@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>马建军 - 个人学术主页</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* 现代极简暗黑主题 (Vercel / Apple 风格) */
+            --bg-main: #09090b;        /* 极深灰底色 */
+            --bg-sidebar: #0c0c0e;     /* 侧边栏稍亮 */
+            --bg-card: #18181b;        /* 卡片底色 */
+            --bg-card-hover: #27272a;  /* 卡片悬浮色 */
+            
+            --primary: #6366f1;        /* 稳重的靛蓝色 */
+            --primary-light: rgba(99, 102, 241, 0.15);
+            
+            --text-heading: #fafafa;   /* 标题亮白 */
+            --text-body: #a1a1aa;      /* 正文柔和灰 */
+            --text-muted: #71717a;     /* 辅助信息暗灰 */
+            
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 255, 255, 0.15);
+            
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-full: 9999px;
+            
+            --sidebar-width: 280px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--text-body);
+            background-color: var(--bg-main);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        ::selection {
+            background: var(--primary-light);
+            color: var(--text-heading);
+        }
+
+        .layout-wrapper { display: flex; min-height: 100vh; }
+
+        /* --- 左侧导航栏 --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            height: 100vh;
+            left: 0; top: 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .sidebar-profile {
+            padding: 3.5rem 1.5rem 2rem;
+            text-align: center;
+        }
+
+        .profile-placeholder {
+            width: 96px; height: 96px;
+            background: var(--bg-card);
+            border-radius: var(--radius-full);
+            margin: 0 auto 1.5rem;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; color: var(--primary);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .sidebar-profile h1 {
+            color: var(--text-heading);
+            font-size: 1.25rem; font-weight: 600;
+            margin-bottom: 0.25rem; letter-spacing: 1px;
+        }
+
+        .sidebar-profile .subtitle {
+            color: var(--text-muted);
+            font-size: 0.85rem; font-weight: 400;
+        }
+
+        .sidebar-nav { flex: 1; padding: 1rem 0; overflow-y: auto; }
+        .nav-links { list-style: none; }
+        
+        .nav-links a {
+            display: flex; align-items: center;
+            padding: 0.8rem 2.5rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 0.9rem; font-weight: 500;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-links a i { width: 24px; margin-right: 12px; font-size: 1rem; }
+        
+        .nav-links a:hover {
+            color: var(--text-heading);
+            background: var(--bg-card);
+        }
+
+        .nav-links a.active {
+            color: var(--primary);
+            background: linear-gradient(90deg, var(--primary-light) 0%, transparent 100%);
+            border-left-color: var(--primary);
+        }
+
+        .sidebar-footer {
+            padding: 1.5rem; text-align: center;
+            color: var(--text-muted); font-size: 0.75rem;
+        }
+
+        /* --- 主内容区 --- */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 4rem 5%;
+            max-width: 1200px;
+        }
+
+        .section { margin-bottom: 5rem; }
+
+        .section-title {
+            color: var(--text-heading);
+            font-size: 1.75rem; font-weight: 600;
+            margin-bottom: 2.5rem;
+            display: flex; align-items: center;
+        }
+
+        .section-title i {
+            color: var(--primary); margin-right: 12px; font-size: 1.5rem;
+        }
+
+        /* --- 关于我：联系信息卡片 --- */
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .info-item {
+            display: flex; align-items: center;
+            padding: 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            transition: var(--transition);
+        }
+
+        .info-item:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+        }
+
+        .info-item i {
+            width: 48px; height: 48px;
+            background: var(--primary-light);
+            border-radius: var(--radius-md);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--primary); font-size: 1.25rem;
+            margin-right: 1rem;
+        }
+
+        .info-item .label {
+            display: block; font-size: 0.75rem;
+            color: var(--text-muted); margin-bottom: 2px;
+        }
+
+        .info-item .value {
+            color: var(--text-heading); font-size: 0.95rem; font-weight: 500;
+        }
+        
+        .info-item a { color: var(--text-heading); text-decoration: none; transition: var(--transition); }
+        .info-item a:hover { color: var(--primary); }
+
+        /* --- 时间轴 (教育 & 项目) --- */
+        .timeline { position: relative; padding-left: 2rem; }
+        
+        .timeline::before {
+            content: ''; position: absolute;
+            left: 0; top: 8px; bottom: 0;
+            width: 2px; background: var(--bg-card);
+        }
+
+        .timeline-item { position: relative; margin-bottom: 2.5rem; }
+        .timeline-item:last-child { margin-bottom: 0; }
+
+        .timeline-dot {
+            position: absolute;
+            left: -2.35rem; top: 6px;
+            width: 14px; height: 14px;
+            border-radius: var(--radius-full);
+            background: var(--bg-main);
+            border: 3px solid var(--primary);
+            transition: var(--transition);
+        }
+
+        .timeline-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .timeline-content:hover { border-color: var(--border-hover); }
+
+        .edu-header, .project-header {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;
+        }
+
+        .edu-header h3, .project-header h3 {
+            font-size: 1.15rem; color: var(--text-heading); font-weight: 600;
+        }
+
+        .time, .project-time {
+            font-size: 0.8rem; color: var(--text-muted);
+            display: flex; align-items: center; gap: 6px;
+            background: rgba(255,255,255,0.03);
+            padding: 4px 10px; border-radius: var(--radius-full);
+        }
+
+        .degree, .project-org {
+            color: var(--primary); font-size: 0.9rem; font-weight: 500; margin-bottom: 1rem;
+        }
+
+        .courses, .project-desc { font-size: 0.9rem; line-height: 1.7; }
+        .courses strong { color: var(--text-heading); font-weight: 500; }
+
+        /* --- 科研成果 --- */
+        .category-title {
+            font-size: 1.1rem; color: var(--text-heading);
+            margin-bottom: 1rem; font-weight: 500;
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        .research-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-left: 3px solid var(--primary);
+            border-radius: var(--radius-md);
+            padding: 1.5rem; margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+
+        .research-card:hover { transform: translateX(4px); border-color: var(--border-hover); }
+
+        .paper-title {
+            color: var(--text-heading); font-size: 1rem;
+            font-weight: 500; margin-bottom: 0.75rem; line-height: 1.5;
+        }
+
+        .tag {
+            display: inline-block;
+            background: var(--primary-light);
+            color: #818cf8;
+            font-size: 0.7rem; font-weight: 600;
+            padding: 2px 8px; border-radius: var(--radius-full);
+            margin-left: 8px; vertical-align: middle;
+        }
+
+        .paper-desc { font-size: 0.85rem; color: var(--text-body); }
+
+        .research-list .list-item {
+            display: flex; gap: 12px;
+            padding: 1rem; background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            margin-bottom: 0.8rem;
+        }
+        
+        .research-list .list-item i { color: var(--primary); margin-top: 4px; }
+        .research-list .list-item p { font-size: 0.9rem; margin: 0; }
+        .research-list .list-item strong { color: var(--text-heading); }
+        .status { color: #f59e0b; font-size: 0.8rem; }
+
+        /* --- 课程作业 (视频卡片) --- */
+        .video-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;
+        }
+
+        .coursework-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            overflow: hidden; transition: var(--transition);
+        }
+
+        .coursework-card:hover { transform: translateY(-4px); border-color: var(--border-hover); }
+
+        .card-header { padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color); }
+        .card-header h3 { font-size: 0.95rem; color: var(--text-heading); font-weight: 500; }
+        .card-header i { color: var(--primary); margin-right: 8px; }
+
+        .video-container { position: relative; padding-top: 56.25%; background: #000; }
+        .video-container video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+        .card-body { padding: 1rem 1.5rem; }
+        .coursework-desc { font-size: 0.85rem; }
+
+        /* --- 荣誉获奖 --- */
+        .honors-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+
+        .honor-category {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+        }
+
+        .honor-category h3 {
+            font-size: 1.05rem; color: var(--text-heading);
+            margin-bottom: 1.25rem; display: flex; align-items: center; gap: 8px;
+        }
+
+        .honors-list { list-style: none; }
+        .honors-list li {
+            display: flex; align-items: flex-start; gap: 10px;
+            font-size: 0.9rem; margin-bottom: 0.8rem;
+        }
+        
+        .text-warning { color: #fbbf24; }
+        .text-primary { color: var(--primary); }
+        .text-danger { color: #f87171; }
+        .year { color: var(--text-muted); font-size: 0.8rem; }
+
+        .competition-tags { display: flex; flex-wrap: wrap; gap: 10px; }
+        .comp-tag {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-full);
+            padding: 6px 14px; font-size: 0.85rem;
+            display: flex; align-items: center; gap: 8px;
+            transition: var(--transition);
+        }
+        .comp-tag:hover { border-color: var(--primary); color: var(--text-heading); }
+        .comp-tag i { color: var(--primary); }
+
+        /* --- 响应式 --- */
+        @media (max-width: 992px) {
+            :root { --sidebar-width: 0px; }
+            .sidebar { transform: translateX(-100%); width: 260px; transition: transform 0.3s; }
+            .sidebar.active { transform: translateX(0); border-right: 1px solid var(--border-color); }
+            .main-content { padding: 2rem 1.5rem; margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-profile">
+                <div class="profile-placeholder"><i class="fas fa-user-graduate"></i></div>
+                <h1>马建军</h1>
+                <p class="subtitle">宁夏大学 · 软件工程</p>
+            </div>
+
+            <nav class="sidebar-nav">
+                <ul class="nav-links">
+                    <li><a href="#about" class="active"><i class="fas fa-user"></i> 关于我</a></li>
+                    <li><a href="#education"><i class="fas fa-graduation-cap"></i> 教育背景</a></li>
+                    <li><a href="#research"><i class="fas fa-flask"></i> 科研成果</a></li>
+                    <li><a href="#projects"><i class="fas fa-project-diagram"></i> 项目经历</a></li>
+                    <li><a href="#coursework"><i class="fas fa-laptop-code"></i> 课程作业</a></li>
+                    <li><a href="#honors"><i class="fas fa-award"></i> 荣誉获奖</a></li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <p>&copy; 2025 马建军</p>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <section id="about" class="section">
+                <h2 class="section-title"><i class="fas fa-user"></i> 关于我</h2>
+                <div class="contact-info">
+                    <div class="info-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <span class="label">联系电话</span>
+                            <span class="value">15729539113</span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <span class="label">电子邮箱</span>
+                            <span class="value"><a href="mailto:majianjun@nxu.edu.cn">majianjun@nxu.edu.cn</a></span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-trophy"></i>
+                        <div>
+                            <span class="label">综合成绩排名</span>
+                            <span class="value">前 6%</span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-id-card"></i>
+                        <div>
+                            <span class="label">政治面貌</span>
+                            <span class="value">共青团员</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="education" class="section">
+                <h2 class="section-title"><i class="fas fa-graduation-cap"></i> 教育背景</h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="edu-header">
+                                <h3>宁夏大学 前沿交叉学院</h3>
+                                <span class="time"><i class="far fa-calendar-alt"></i> 2023.09 - 至今</span>
+                            </div>
+                            <p class="degree">软件工程（智能工程方向）</p>
+                            <p class="courses"><strong>核心课程：</strong>高等数学、概率论与数理统计、算法与数据结构、计算机网络、模式识别、机器学习、深度学习等</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="research" class="section">
+                <h2 class="section-title"><i class="fas fa-flask"></i> 科研成果</h2>
+                
+                <h3 class="category-title"><i class="fas fa-file-alt"></i> 学术论文</h3>
+                <div class="research-card">
+                    <div class="paper-title">[1] Ma Jianjun, Yan Jiaxin, et al. Quantitative Analysis of Hidden Information in Tumor Data Using Mutual Information Theory. <br><em>Proceedings of the 6th International Conference on Biomedical and Bioinformatics Engineering (ICBBE 2026), ACM, accepted, 2026.</em> <span class="tag">EI, Scopus</span></div>
+                    <p class="paper-desc">该研究将互信息理论引入肺部肿瘤放射组学分析，构建104维影像特征的MI矩阵，定量揭示恶性程度与特征间共享信息量的负反馈关系，AUC达0.942，为肿瘤分级与TNM分期提供可解释的信息论量化新范式。</p>
+                </div>
+
+                <div class="research-card">
+                    <div class="paper-title">[2] Ma Jianjun, et al. An End-to-End Framework for Unmanned Aerial Vehicle-Based Pipeline Inspection: From Dataset Construction to Scene-Aware Detection Evaluation. <br><em>Submitted to Engineering Applications of Artificial Intelligence, under review, 2026.</em> <span class="tag">SCI</span></div>
+                    <p class="paper-desc">该研究构建了从数据集采集到场景感知评估的无人机管网巡检全链路框架。提出场景感知评估策略，定量揭示了飞行高度等工况对检测性能的影响，为复杂工业环境下的闭环部署提供了可靠依据。</p>
+                </div>
+
+                <br>
+                <h3 class="category-title"><i class="fas fa-lightbulb"></i> 发明专利</h3>
+                <div class="research-list">
+                    <div class="list-item">
+                        <i class="fas fa-check-circle"></i>
+                        <p><strong>马建军</strong>. 基于条件熵优化的医学影像特征提取与诊断方法[P]. 中国发明专利, 申请号: 202510636418X, 2025 <span class="status">(实质审查阶段)</span>.</p>
+                    </div>
+                    <div class="list-item">
+                        <i class="fas fa-check-circle"></i>
+                        <p><strong>马建军</strong>. 一种基于互信息块矩阵的医学影像系统[P]. 中国发明专利, 申请号: 2025106143971, 2025 <span class="status">(实质审查阶段)</span>.</p>
+                    </div>
+                </div>
+
+                <br>
+                <h3 class="category-title"><i class="fas fa-code"></i> 软件著作权</h3>
+                <div class="research-list">
+                    <div class="list-item">
+                        <i class="fas fa-copyright"></i>
+                        <p><strong>马建军</strong>. 宁夏区域医疗 3D 数据库后台接口软件 [CP]. 登记号: 2024SR1436599, 2024.</p>
+                    </div>
+                    <div class="list-item">
+                        <i class="fas fa-copyright"></i>
+                        <p><strong>马建军</strong>. 基于 Flask 的医疗患者信息管理系统 [CP]. 登记号: 2025SR1901605, 2025.</p>
+                    </div>
+                    <div class="list-item">
+                        <i class="fas fa-copyright"></i>
+                        <p>章岚, <strong>马建军</strong>. 宁夏乡村旅游信息发布与预订系统 [CP]. 登记号: 2025SR2299292, 2025.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="projects" class="section">
+                <h2 class="section-title"><i class="fas fa-project-diagram"></i> 项目经历</h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="project-header">
+                                <h3>基于信息几何的肿瘤生长多学科动态建模与精准定量研究</h3>
+                                <span class="project-time"><i class="far fa-clock"></i> 2026.02 - 至今</span>
+                            </div>
+                            <p class="project-org"><i class="fas fa-building"></i> 校内教师自治区自然基金项目</p>
+                            <p class="project-desc">针对传统深度学习在定量分析中可解释性差、难以融合多维度生物读数的上限，引入肿瘤几何理论将生长与转化为建模为统计流形上的动态趋势。本人负责图像统计流形构建与数值实现，基于肺部CT图像提取104维纹理特征，以Fisher信息矩阵控制量构建图像统计流形，计算测地线与曲率分布。</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="project-header">
+                                <h3>无人机 & 机库智慧巡检管理系统开发与关键算法研究</h3>
+                                <span class="project-time"><i class="far fa-clock"></i> 2026.01 - 2026.04</span>
+                            </div>
+                            <p class="project-org"><i class="fas fa-building"></i> 校内教师横向项目</p>
+                            <p class="project-desc">针对无人机智慧巡检场景下目标检测与数据管理需求，开发智慧巡检系统。本人负责巡检数据处理与模型构建，开发了一套"分类-预标-细化"的半自动标注工具。利用 CLIP 模型场景分选，YOLO 生成初步预测框，引入 SAM 提取目标掩码并反向修正边界框，标注效率提升 5 倍。</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="project-header">
+                                <h3>全球沿海国家农作物产量与产值的集成学习预测</h3>
+                                <span class="project-time"><i class="far fa-clock"></i> 2025.08 - 2025.11</span>
+                            </div>
+                            <p class="project-org"><i class="fas fa-building"></i> 中山大学(深圳)生态经济课题组</p>
+                            <p class="project-desc">构建基于 FAO 多源农业数据的跨国家与作物的集成预测框架。本人负责全流程数据工程，设计两阶段缺失值填补策略构建高质量训练集；独立搭建多模型对比框架，通过加权集成完成最优模型筛选与预测分析。</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="coursework" class="section">
+                <h2 class="section-title"><i class="fas fa-laptop-code"></i> 课程作业展示</h2>
+                <div class="video-grid">
+                    <div class="coursework-card">
+                        <div class="card-header">
+                            <h3><i class="fab fa-android"></i> 鸿蒙应用开发</h3>
+                        </div>
+                        <div class="video-container">
+                            <video controls poster="images/poster-harmony.jpg">
+                                <source src="videos/harmonyos-demo.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="card-body">
+                            <p class="coursework-desc">鸿蒙应用开发课程大作业综合展示</p>
+                        </div>
+                    </div>
+
+                    <div class="coursework-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-eye"></i> 模式识别</h3>
+                        </div>
+                        <div class="video-container">
+                            <video controls poster="images/poster-pattern.jpg">
+                                <source src="videos/pattern-recognition.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="card-body">
+                            <p class="coursework-desc">模式识别经典算法原理与应用实战</p>
+                        </div>
+                    </div>
+
+                    <div class="coursework-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-bar"></i> 数据挖掘</h3>
+                        </div>
+                        <div class="video-container">
+                            <video controls poster="images/poster-data.jpg">
+                                <source src="videos/power-load-prediction.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="card-body">
+                            <p class="coursework-desc">基于时序数据的电力负荷预测系统开发</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="honors" class="section">
+                <h2 class="section-title"><i class="fas fa-award"></i> 荣誉获奖</h2>
+                <div class="honors-grid">
+                    <div class="honor-category">
+                        <h3><i class="fas fa-medal"></i> 综合荣誉</h3>
+                        <ul class="honors-list">
+                            <li><i class="fas fa-star text-warning"></i> <span>国家励志奖学金 <span class="year">（2024、2025连续两届）</span></span></li>
+                            <li><i class="fas fa-star text-warning"></i> <span>校级一等奖学金 <span class="year">（2024、2025连续两届）</span></span></li>
+                            <li><i class="fas fa-user-check text-primary"></i> <span>宁夏大学三好学生 <span class="year">（2024、2025连续两届）</span></span></li>
+                            <li><i class="fas fa-heart text-danger"></i> <span>沙坡头马拉松精英/优秀志愿者 <span class="year">（2024）</span></span></li>
+                        </ul>
+                    </div>
+
+                    <div class="honor-category">
+                        <h3><i class="fas fa-trophy"></i> 竞赛获奖</h3>
+                        <div class="competition-tags">
+                            <span class="comp-tag"><i class="fas fa-award"></i> <span>全国大学生数学建模竞赛 · 宁夏赛区三等奖 <span class="year">(2023, 2024)</span></span></span>
+                            <span class="comp-tag"><i class="fas fa-award"></i> 亚太地区数学建模竞赛 · 三等奖</span>
+                            <span class="comp-tag"><i class="fas fa-award"></i> 第十二届全国大数媒竞赛 · 宁夏赛区三等奖 (2项)</span>
+                            <span class="comp-tag"><i class="fas fa-award"></i> 2026年数智未来高质量数据集创新大赛 · 三等奖</span>
+                            <span class="comp-tag"><i class="fas fa-award"></i> 2025年大学生创新创业大赛 · 省级奖项</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // 简单的导航栏高亮逻辑
+        document.addEventListener("DOMContentLoaded", () => {
+            const sections = document.querySelectorAll("section");
+            const navLinks = document.querySelectorAll(".nav-links a");
+
+            window.addEventListener("scroll", () => {
+                let current = "";
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 150) {
+                        current = section.getAttribute("id");
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove("active");
+                    if (link.getAttribute("href").includes(current)) {
+                        link.classList.add("active");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

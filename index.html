@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>马建军 · 个人学术主页</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* 纸质素描风格变量 */
+            --paper: #f4ecd8;       /* 主背景色：调淡、更柔和的素描纸本色 */
+            --paper-dark: #eee4cc;  /* 次背景色/侧边栏：稍微区分的浅纸色 */
+            --paper-line: rgba(60, 40, 20, 0.15); /* 铅笔横线颜色：调淡横线，减弱干扰 */
+            --ink: #3a2b1c;         /* 主文字颜色：深褐色/软炭笔色 */
+            --ink-light: #5e4832;   /* 辅助文字颜色：褐色铅笔 */
+            --ink-faint: #8a735c;   /* 极淡文字/边框：硬铅笔灰/棕灰 */
+            --accent: #6b3a20;      /* 强调色：红棕色（Sepia 素描风格） */
+            --accent-muted: #9c6c50;
+            --sidebar-w: 260px;
+            --border: rgba(40, 25, 10, 0.15); /* 素描排版更明显的深棕线条分割，调淡透明度 */
+            --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+
+            /* 素描手绘风格边框圆角 */
+            --sketch-r1: 255px 15px 225px 15px/15px 225px 15px 255px;
+            --sketch-r2: 15px 225px 15px 255px/255px 15px 225px 15px;
+            --sketch-r3: 255px 55px 225px 15px/15px 225px 15px 255px;
+        }
+
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Zhi Mang Xing', 'Ma Shan Zheng', 'Kaiti', 'STKaiti', serif; /* 切换为手写/楷体/素描感字体 */
+            background-color: var(--paper);
+
+            /* 叠加黄牛皮纸/素描纸的粗糙纹理滤镜 + 笔记本横线 */
+            background-image:
+                repeating-linear-gradient(
+                    transparent,
+                    transparent 39px,
+                    var(--paper-line) 39px,
+                    var(--paper-line) 40px
+                ),
+                radial-gradient(circle at center, transparent 0%, rgba(150, 120, 80, 0.08) 100%); /* 暗角也调淡 */
+
+            color: var(--ink);
+            line-height: 40px; /* 行高严格对齐横线间距 40px */
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            font-size: 18px; /* 字体稍微调大适应手写感 */
+        }
+
+        .layout { display:flex; min-height:100vh; position:relative; z-index:2; }
+
+        /* ══════════════════════════════════════
+           SIDEBAR
+        ══════════════════════════════════════ */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--paper-dark);
+            border-right: 1px solid var(--border);
+            position: fixed;
+            height: 100vh;
+            left: 0; top: 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 50;
+            box-shadow: inset -5px 0 15px rgba(0,0,0,0.02); /* 书脊质感 */
+        }
+
+        .profile-block {
+            padding: 3.5rem 1.8rem 2rem;
+            text-align: center;
+        }
+
+        .avatar-ring {
+            width: 100px; height: 130px; /* 调整为适合一寸照的比例 (一般是 1:1.4 左右) */
+            margin: 0 auto 1.5rem;
+            border-radius: var(--sketch-r3); /* 素描手绘圆角，不再使用完全的圆形 */
+            border: 2px solid var(--ink); /* 素描粗边框 */
+            padding: 4px;
+            background: var(--paper);
+            transform: rotate(-2deg); /* 像随手贴上去的照片 */
+            box-shadow: 3px 3px 0px var(--ink-faint); /* 素描排线阴影 */
+        }
+
+        .avatar-ring::before, .avatar-ring::after { display: none; } /* 移除光环 */
+
+        .avatar-inner {
+            width: 100%; height: 100%;
+            border-radius: var(--sketch-r2);
+            background: var(--paper);
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden; /* 确保图片不超出边框 */
+            border: 1px solid var(--border);
+        }
+
+        .avatar-inner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* 可选：给照片加一点素描滤镜感 filter: sepia(0.3) grayscale(0.2) contrast(1.1); */
+        }
+
+        .profile-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--ink);
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+            font-family: 'Zhi Mang Xing', 'Ma Shan Zheng', 'Kaiti', 'STKaiti', serif; /* 侧边栏姓名也用手写体 */
+            transform: rotate(-2deg); /* 轻微手写倾斜 */
+        }
+
+        .profile-tag {
+            font-size: 0.8rem;
+            color: var(--ink-light);
+            letter-spacing: 1px;
+            font-family: 'Noto Sans SC', sans-serif; /* 无衬线辅助 */
+        }
+
+        .divider {
+            width: 40px;
+            height: 2px;
+            background: var(--accent);
+            margin: 1.5rem auto;
+        }
+
+        .nav { flex: 1; padding: 0; }
+        .nav ul { list-style: none; }
+
+        .nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.8rem 2rem;
+            color: var(--ink-light);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            transition: all 0.2s var(--ease);
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+
+        .nav a i { font-size: 0.9rem; width: 18px; text-align: center; }
+
+        .nav a::before { display: none; } /* 移除背景高亮渐变 */
+
+        .nav a:hover { color: var(--ink); background: transparent; text-decoration: underline; text-decoration-style: wavy; text-decoration-color: var(--ink-faint); }
+        .nav a.active {
+            color: var(--ink);
+            font-weight: bold;
+            background: transparent;
+            text-decoration: underline;
+            text-decoration-style: wavy; /* 素描波浪线高亮 */
+            text-decoration-color: var(--ink);
+            transform: translateX(5px); /* 稍微错位感 */
+        }
+
+        .sidebar-bottom {
+            padding: 1.5rem 2rem;
+            font-size: 0.72rem;
+            color: var(--ink-faint);
+            font-family: 'Noto Sans SC', sans-serif;
+            border-top: 1px solid var(--border);
+        }
+
+        /* ── MAIN ── */
+        .main {
+            flex: 1;
+            margin-left: var(--sidebar-w);
+            padding: 4rem 5% 6rem;
+            /* 移除了所有的 max-width 限制，让内容彻底占满屏幕剩余的所有宽度 */
+        }
+
+        /* ── HERO ── */
+        .hero {
+            padding: 5rem 0 4rem;
+            position: relative;
+        }
+
+        .hero-eyebrow {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 0.85rem;
+            color: var(--accent);
+            letter-spacing: 2px;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hero-eyebrow::before {
+            content: '';
+            width: 40px; height: 1px;
+            background: var(--accent);
+            display: inline-block;
+        }
+
+        .hero-name {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.2;
+            letter-spacing: 2px;
+            margin-bottom: 0.8rem;
+            margin-top: 10px; /* 微调标题位置以对齐横线 */
+        }
+
+        .hero-name .accent-char {
+            color: var(--accent);
+            text-decoration: underline;
+            text-decoration-style: wavy; /* 改为波浪线更符合手绘感，且不会生硬 */
+            text-decoration-thickness: 2px;
+            text-decoration-color: var(--ink-faint);
+            text-underline-offset: 8px; /* 拉开与文字的间距，更透气 */
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: var(--ink-light);
+            margin-bottom: 2.5rem;
+            font-weight: 400;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-num {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--ink);
+            line-height: 1;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .stat-num .unit {
+            font-size: 1rem;
+            color: var(--accent);
+            margin-left: 3px;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--ink-faint);
+            font-family: 'Noto Sans SC', sans-serif;
+            letter-spacing: 1px;
+            margin-top: 6px;
+        }
+
+        /* ── SECTION ── */
+        .section { margin-bottom: 5rem; }
+
+        .sec-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 2.5rem;
+        }
+
+        .sec-num {
+            font-family: 'Times New Roman', serif;
+            font-size: 1rem;
+            color: var(--ink-faint); /* 淡素描灰 */
+            font-style: italic;
+            text-decoration: underline;
+            text-decoration-style: solid;
+        }
+
+        .sec-title {
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: var(--ink);
+            letter-spacing: 1px;
+            font-family: 'Zhi Mang Xing', 'Ma Shan Zheng', 'Kaiti', 'STKaiti', serif; /* 标题保持素描手写体 */
+            position: relative;
+        }
+
+        .sec-line {
+            flex: 1;
+            height: 2px;
+            background: repeating-linear-gradient(to right, var(--ink-faint), var(--ink-faint) 5px, transparent 5px, transparent 10px); /* 手绘虚线感 */
+        }
+
+        /* ── CONTACT GRID ── */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .contact-card {
+            background: transparent;
+            border: 2px solid var(--ink); /* 素描粗黑边框 */
+            border-radius: var(--sketch-r1); /* 素描手绘圆角 */
+            padding: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: all 0.3s var(--ease);
+            position: relative;
+            overflow: hidden; /* 确保任何内容都不会超出素描边框 */
+        }
+
+        .contact-card::before {
+            display: none;
+        }
+
+        .contact-card:hover {
+            border-radius: var(--sketch-r2); /* 悬停时稍微改变圆角模拟手绘动态 */
+            box-shadow: 4px 4px 0px var(--ink-light); /* 素描排线阴影 */
+        }
+
+        .cc-icon {
+            width: 40px; height: 40px;
+            background: transparent;
+            border: 2px solid var(--ink); /* 素描图标边框 */
+            border-radius: var(--sketch-r3); /* 手绘圆角 */
+            display: flex; align-items: center; justify-content: center;
+            color: var(--ink); /* 炭黑图标 */
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            transform: rotate(-3deg); /* 素描手绘倾斜感 */
+        }
+
+        .cc-label { font-size: 0.75rem; color: var(--ink-faint); margin-bottom: 2px; font-family: 'Noto Sans SC', sans-serif; text-transform: uppercase; letter-spacing: 1px; }
+        .cc-value {
+            font-size: 0.95rem;
+            color: var(--ink);
+            font-weight: 500;
+            font-family: 'Noto Serif SC', serif;
+            word-break: break-all; /* 允许长串字母换行，防止邮箱溢出 */
+            overflow-wrap: break-word;
+        }
+        .cc-value a { color: inherit; text-decoration: none; transition: color 0.2s; }
+        .cc-value a:hover { color: var(--accent); }
+
+        /* ── TIMELINE ── */
+        .timeline { position: relative; padding-left: 2rem; }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 5px; top: 0; bottom: 0;
+            width: 2px;
+            background: repeating-linear-gradient(to bottom, var(--ink-faint), var(--ink-faint) 8px, transparent 8px, transparent 12px); /* 铅笔虚线 */
+        }
+
+        .tl-item { position: relative; margin-bottom: 3rem; }
+        .tl-item:last-child { margin-bottom: 0; }
+
+        .tl-dot {
+            position: absolute;
+            left: -2.1rem; top: 6px;
+            width: 14px; height: 14px;
+            border-radius: var(--sketch-r2); /* 手绘感圆点 */
+            border: 2px solid var(--ink); /* 铅笔描边 */
+            background: transparent;
+            transition: all 0.3s;
+            transform: rotate(15deg);
+        }
+
+        .tl-item:hover .tl-dot {
+            background: var(--ink-faint); /* 素描铅笔涂满感 */
+            transform: rotate(45deg);
+        }
+
+        .tl-card {
+            background: transparent;
+            border: none;
+            padding: 0;
+            transition: all 0.35s var(--ease);
+        }
+
+        .tl-card:hover { transform: translateX(4px); }
+
+        .tl-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .tl-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.4;
+            font-family: 'Noto Serif SC', serif;
+        }
+
+        .tl-badge {
+            font-family: 'Times New Roman', serif;
+            font-size: 0.8rem;
+            color: var(--ink-light);
+            font-style: italic;
+        }
+
+        .tl-org {
+            font-size: 0.9rem;
+            color: var(--accent);
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Noto Sans SC', sans-serif;
+            font-weight: 500;
+        }
+
+        .tl-body { font-size: 0.95rem; line-height: 1.8; color: var(--ink-light); text-align: justify; }
+
+        /* ── PAPER CARD ── */
+        .paper-card {
+            background: transparent;
+            border: 2px solid var(--ink-light); /* 素描排线边框 */
+            border-radius: var(--sketch-r1); /* 素描手绘圆角 */
+            padding: 1.8rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s var(--ease);
+            position: relative;
+        }
+
+        .paper-card::after { display: none; }
+
+        .paper-card:hover {
+            transform: translateY(-3px);
+            border-radius: var(--sketch-r3);
+            box-shadow: 5px 5px 0px var(--ink-faint); /* 素描排线阴影 */
+        }
+
+        .paper-card.blue { border-left-color: var(--ink-light); }
+        .paper-card.blue:hover { border-color: rgba(0,0,0,0.15); }
+
+        .paper-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--ink);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            font-family: 'Noto Serif SC', serif;
+        }
+
+        .paper-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+
+        .pill {
+            font-size: 0.8rem;
+            padding: 2px 10px;
+            border-radius: var(--sketch-r2); /* 手绘圆角 */
+            font-weight: bold;
+            letter-spacing: 1px;
+            border: 2px solid var(--ink); /* 粗铅笔描边 */
+            color: var(--ink);
+            transform: rotate(-1deg);
+        }
+
+        .pill-green, .pill-blue, .pill-purple, .pill-amber {
+            /* 统一为素描黑白灰风格 */
+            background: transparent;
+        }
+
+        .paper-desc { font-size: 0.95rem; color: var(--ink-light); margin-top: 1rem; line-height: 1.8; text-align: justify; }
+
+        /* ── IP LIST ── */
+        .ip-list { display: flex; flex-direction: column; gap: 1.2rem; }
+
+        .ip-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            background: transparent;
+            border-bottom: 1px dotted var(--border);
+            padding: 0 0 1.2rem 0;
+            transition: all 0.3s;
+        }
+
+        .ip-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .ip-icon {
+            width: 32px; height: 32px;
+            border-radius: 4px; /* 更方正 */
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+            margin-top: 4px;
+            border: 1px solid var(--border);
+        }
+
+        .ip-icon.green { background: transparent; color: var(--accent); }
+        .ip-icon.blue { background: transparent; color: var(--ink-light); }
+
+        .ip-text { font-size: 0.95rem; line-height: 1.8; color: var(--ink-light); text-align: justify;}
+        .ip-text strong { color: var(--ink); font-weight: 600; font-family: 'Noto Serif SC', serif;}
+        .ip-status {
+            display: inline-block;
+            margin-left: 8px;
+            font-size: 0.75rem;
+            font-family: 'Times New Roman', serif;
+            color: var(--accent-muted);
+            font-style: italic;
+        }
+
+        /* ── CATEGORY LABEL ── */
+        .cat-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 2.5rem 0 1.5rem;
+            font-size: 0.85rem;
+            font-family: 'Times New Roman', serif;
+            color: var(--ink-faint);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .cat-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* ── COURSEWORK GRID ── */
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 一行三个 */
+            gap: 2rem;
+            width: 100%; /* 撑满父容器 */
+        }
+
+        @media (max-width: 992px) {
+            .course-grid { grid-template-columns: 1fr; }
+        }
+
+        .course-card {
+            background: transparent;
+            border: 2px solid var(--ink-faint); /* 细铅笔线边框 */
+            border-radius: var(--sketch-r2); /* 手绘感外框 */
+            overflow: hidden;
+            transition: all 0.3s var(--ease);
+        }
+
+        .course-card:hover {
+            border-color: var(--ink);
+            transform: translateY(-3px);
+            border-radius: var(--sketch-r1);
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.1); /* 素描阴影 */
+        }
+
+        .course-thumb {
+            height: 180px;
+            background: rgba(0,0,0,0.02);
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .course-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* 纸质素描风格滤镜，让图片更融入背景 */
+            filter: sepia(0.2) grayscale(0.2) contrast(1.1);
+            transition: all 0.3s var(--ease);
+        }
+
+        .course-card:hover .course-img {
+            filter: sepia(0) grayscale(0) contrast(1);
+            transform: scale(1.05);
+        }
+
+        .course-thumb::before { display: none; }
+
+        .thumb-icon {
+            font-size: 3.5rem;
+            color: var(--ink-faint);
+            opacity: 0.5;
+            z-index: 1;
+        }
+
+        .thumb-grid { display: none; } /* 移除背景网格 */
+
+        .course-body { padding: 1.5rem; }
+
+        .course-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 0.8rem;
+            font-family: 'Noto Serif SC', serif;
+        }
+
+        .course-desc { font-size: 0.9rem; color: var(--ink-light); line-height: 1.8; margin-bottom: 1.2rem; text-align: justify;}
+
+        .tech-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+
+        .tech-tag {
+            font-size: 0.8rem;
+            padding: 3px 10px;
+            border-radius: var(--sketch-r3); /* 手绘圆角 */
+            background: transparent;
+            color: var(--ink-light);
+            border: 2px solid var(--ink-faint); /* 细铅笔线边框 */
+            letter-spacing: 1px;
+            transform: rotate(1deg); /* 随意手写感 */
+        }
+
+        /* ── HONORS ── */
+        .honors-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+
+        @media (max-width: 768px) {
+            .honors-wrap { grid-template-columns: 1fr; }
+        }
+
+        .honor-block {
+            background: transparent;
+            border: 2px solid var(--ink-faint); /* 细铅笔线边框 */
+            border-radius: var(--sketch-r2); /* 手绘圆角 */
+            padding: 1.8rem;
+            position: relative;
+        }
+
+        .honor-block::after {
+            content: '';
+            position: absolute;
+            left: 5px; top: 5px;
+            width: 100%; height: 100%;
+            border: 2px solid var(--border);
+            border-radius: var(--sketch-r1);
+            z-index: -1;
+            pointer-events: none; /* 双重素描叠线效果 */
+        }
+
+        .honor-block-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Noto Serif SC', serif;
+        }
+
+        /* ── GALLERY (生活照片) ── */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 强制一行显示三个 */
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .gallery-grid { grid-template-columns: 1fr; } /* 手机端再变成一列 */
+        }
+
+        .polaroid {
+            background: var(--paper-dark);
+            padding: 12px 12px 35px 12px;
+            border: 2px solid var(--ink-faint);
+            border-radius: 2px; /* 偏方正一点 */
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.1);
+            position: relative;
+            transition: all 0.3s var(--ease);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .polaroid:nth-child(1) { transform: rotate(-3deg) translateY(25px); }
+        .polaroid:nth-child(2) { transform: rotate(2deg) translateY(10px); }
+        .polaroid:nth-child(3) { transform: rotate(-1deg); }
+
+        .polaroid:hover {
+            transform: scale(1.05) rotate(0deg);
+            z-index: 10;
+            border-color: var(--ink);
+            box-shadow: 6px 6px 0px rgba(0,0,0,0.15);
+        }
+
+        .polaroid img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border: 1px solid var(--border);
+            filter: sepia(0.3) grayscale(0.2) contrast(1.1); /* 泛黄素描滤镜 */
+            transition: all 0.3s var(--ease);
+        }
+
+        .polaroid:hover img {
+            filter: sepia(0) grayscale(0) contrast(1);
+        }
+
+        /* 用胶带贴住的效果 */
+        .polaroid::before {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-5deg);
+            width: 70px;
+            height: 25px;
+            background: rgba(220, 210, 180, 0.7); /* 纸胶带颜色 */
+            border: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            z-index: 2;
+        }
+
+        .honor-block-title i { color: var(--ink-faint); }
+
+        .honor-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 0.95rem;
+            margin-bottom: 1.2rem;
+            padding-bottom: 1.2rem;
+            border-bottom: 1px dotted var(--border);
+        }
+
+        .honor-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+
+        .honor-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            margin-top: 10px;
+            flex-shrink: 0;
+            background: var(--ink-faint);
+        }
+
+        .dot-gold { background: var(--accent); }
+        .dot-green { background: var(--accent); }
+        .dot-blue { background: var(--ink-light); }
+
+        .honor-text { color: var(--ink-light); line-height: 1.6; text-align: justify;}
+        .honor-text strong { color: var(--ink); font-weight: 600; font-family: 'Noto Serif SC', serif; }
+        .honor-year {
+            font-family: 'Times New Roman', serif;
+            font-size: 0.8rem;
+            color: var(--accent-muted);
+            font-style: italic;
+        }
+
+        /* ── MOBILE ── */
+        .mob-btn {
+            display: none;
+            position: fixed;
+            bottom: 28px; right: 28px;
+            width: 52px; height: 52px;
+            border-radius: 50%;
+            background: var(--paper);
+            border: 1px solid var(--border);
+            color: var(--ink);
+            font-size: 1.3rem;
+            z-index: 200;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .mob-btn:hover { transform: scale(1.05); }
+
+        @media (max-width: 992px) {
+            :root { --sidebar-w: 0px; }
+            .sidebar { transform: translateX(-100%); width: 280px; transition: transform 0.4s var(--ease); border-right: 1px solid var(--border); }
+            .sidebar.open { transform: translateX(0); box-shadow: 20px 0 40px rgba(0,0,0,0.05); }
+            .main { padding: 2rem 1.2rem 4rem; }
+            .mob-btn { display: flex; }
+            .hero-name { font-size: 2.2rem; }
+            .hero-stats { gap: 1.5rem; }
+            .course-grid { grid-template-columns: 1fr; }
+            .contact-grid { grid-template-columns: 1fr; }
+            .ip-item { flex-direction: column; }
+        }
+
+        /* ── FADE IN ── */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+        /* ── SCROLLBAR ── */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--paper-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--ink-faint); }
+
+        ::selection { background: rgba(139, 28, 43, 0.15); color: var(--ink); }
+    </style>
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- ══ SIDEBAR ══ -->
+    <aside class="sidebar" id="sidebar">
+        <div class="profile-block">
+            <div class="avatar-ring">
+                <div class="avatar-inner">
+                    <img src="images/一寸照.jpg" alt="马建军">
+                </div>
+            </div>
+            <div class="profile-name">马建军</div>
+            <div class="profile-tag">// Jianjun Ma</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <nav class="nav">
+            <ul>
+                <li><a href="#about" class="active"><i class="fas fa-user"></i> 关于我</a></li>
+                <li><a href="#education"><i class="fas fa-graduation-cap"></i> 教育背景</a></li>
+                <li><a href="#research"><i class="fas fa-flask"></i> 科研成果</a></li>
+                <li><a href="#projects"><i class="fas fa-code-branch"></i> 项目经历</a></li>
+                <li><a href="#coursework"><i class="fas fa-laptop-code"></i> 课程作业</a></li>
+                <li><a href="#honors"><i class="fas fa-award"></i> 荣誉获奖</a></li>
+                <li><a href="#gallery"><i class="fas fa-camera"></i> 生活记录</a></li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-bottom">
+            宁夏大学 · 前沿交叉学院<br>
+            软件工程（智能工程与技术）
+        </div>
+    </aside>
+
+    <!-- ══ MAIN ══ -->
+    <main class="main">
+
+        <!-- HERO -->
+        <div class="hero fade-in">
+            <div class="hero-eyebrow">Academic Portfolio</div>
+            <div class="hero-name"><span class="accent-char">马</span>建军</div>
+            <div class="hero-subtitle">无人机遥感 · 目标检测 · 农业智能感知</div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <div class="stat-num">2<span class="unit">篇</span></div>
+                    <div class="stat-label">论文 (1 EI / 1 SCI)</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-num">2<span class="unit">项</span></div>
+                    <div class="stat-label">发明专利 (实审)</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-num">3<span class="unit">项</span></div>
+                    <div class="stat-label">软件著作权</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-num">Top<span class="unit">6%</span></div>
+                    <div class="stat-label">综合成绩排名</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABOUT -->
+        <section id="about" class="section fade-in">
+            <div class="sec-header">
+                <span class="sec-num">01</span>
+                <h2 class="sec-title">关于我</h2>
+                <div class="sec-line"></div>
+            </div>
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <div class="cc-icon"><i class="fas fa-phone"></i></div>
+                    <div>
+                        <span class="cc-label">联系电话</span>
+                        <div class="cc-value"><a href="#" id="protect-phone" class="protect-link">Loading...</a></div>
+                    </div>
+                </div>
+                <div class="contact-card">
+                    <div class="cc-icon"><i class="fas fa-envelope"></i></div>
+                    <div>
+                        <span class="cc-label">电子邮箱</span>
+                        <div class="cc-value"><a href="#" id="protect-email" class="protect-link">Loading...</a></div>
+                    </div>
+                </div>
+                <div class="contact-card">
+                    <div class="cc-icon"><i class="fas fa-trophy"></i></div>
+                    <div>
+                        <span class="cc-label">综合成绩排名</span>
+                        <div class="cc-value">前 6%</div>
+                    </div>
+                </div>
+                <div class="contact-card">
+                    <div class="cc-icon"><i class="fas fa-id-card"></i></div>
+                    <div>
+                        <span class="cc-label">基本信息</span>
+                        <div class="cc-value">回族 · 共青团员</div>
+                    </div>
+                </div>
+                <div class="contact-card">
+                    <div class="cc-icon"><i class="fas fa-certificate"></i></div>
+                    <div>
+                        <span class="cc-label">技能证书</span>
+                        <div class="cc-value">全国市场调查与分析专业技能证书</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EDUCATION -->
+        <section id="education" class="section fade-in">
+            <div class="sec-header">
+                <span class="sec-num">02</span>
+                <h2 class="sec-title">教育背景</h2>
+                <div class="sec-line"></div>
+            </div>
+            <div class="timeline">
+                <div class="tl-item">
+                    <div class="tl-dot"></div>
+                    <div class="tl-card">
+                        <div class="tl-head">
+                            <div class="tl-title">宁夏大学 · 前沿交叉学院</div>
+                            <span class="tl-badge">2023.09 — 至今</span>
+                        </div>
+                        <div class="tl-org"><i class="fas fa-book-open"></i> 软件工程（智能工程与技术）</div>
+                        <div class="tl-body">核心课程：高等数学、概率论与数理统计、算法与数据结构、计算机网络、模式识别、机器学习、深度学习、数字图像处理、数据挖掘</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RESEARCH -->
+        <section id="research" class="section fade-in">
+            <div class="sec-header">
+                <span class="sec-num">03</span>
+                <h2 class="sec-title">科研成果</h2>
+                <div class="sec-line"></div>
+            </div>
+
+            <div class="cat-label"><i class="fas fa-file-alt"></i> 学术论文</div>
+
+            <div class="paper-card">
+                <div class="paper-title">
+                    Ma Jianjun, Yan Jiaxin, et al. <em>Quantitative Analysis of Hidden Information in Tumor Data Using Mutual Information Theory.</em>
+                    Proceedings of the 6th International Conference on Biomedical and Bioinformatics Engineering (ICBBE 2026), ACM, 2026.
+                </div>
+                <div class="paper-meta">
+                    <span class="pill pill-green">共同一作</span>
+                    <span class="pill pill-blue">EI · Scopus</span>
+                    <span class="pill pill-amber">ACM</span>
+                    <span class="pill pill-purple">Accepted</span>
+                </div>
+                <div class="paper-desc">将互信息理论引入肺部肿瘤放射组学分析，构建104维影像特征的MI矩阵，定量揭示恶性程度与特征间共享信息量的负反馈关系，AUC达0.942，为肿瘤分级与TNM分期提供可解释的信息论量化新范式。</div>
+            </div>
+
+            <div class="paper-card blue">
+                <div class="paper-title">
+                    Ma Jianjun, et al. <em>An End-to-End Framework for Unmanned Aerial Vehicle-Based Pipeline Inspection: From Dataset Construction to Scene-Aware Detection Evaluation.</em>
+                    Engineering Applications of Artificial Intelligence, 2026.
+                </div>
+                <div class="paper-meta">
+                    <span class="pill pill-green">第一作者</span>
+                    <span class="pill pill-blue">SCI · CAS Q1 TOP</span>
+                    <span class="pill pill-amber">Under Review</span>
+                </div>
+                <div class="paper-desc">构建从数据集采集到场景感知评估的无人机管网巡检全链路框架，提出场景感知评估策略，定量揭示飞行高度等工况对检测性能的影响，为复杂工业环境下的闭环部署提供可靠依据。</div>
+            </div>
+
+            <div class="cat-label"><i class="fas fa-lightbulb"></i> 发明专利</div>
+            <div class="ip-list">
+                <div class="ip-item">
+                    <div class="ip-icon green"><i class="fas fa-file-signature"></i></div>
+                    <div class="ip-text">
+                        <strong>国家知识产权局发明专利</strong>. 一种用于肺部肿瘤 CT 影像分析的人机协同平台 [P]. 发明人之一, 2025.5.
+                        <span class="ip-status">受理阶段</span>
+                    </div>
+                </div>
+                <div class="ip-item">
+                    <div class="ip-icon green"><i class="fas fa-file-signature"></i></div>
+                    <div class="ip-text">
+                        <strong>国家知识产权局发明专利</strong>. 基于条件熵优化的医学影像特征提取与诊断方法 [P]. 申请人及发明人之一, 2025.5.
+                        <span class="ip-status">受理阶段</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cat-label"><i class="fas fa-code"></i> 软件著作权</div>
+            <div class="ip-list">
+                <div class="ip-item">
+                    <div class="ip-icon blue"><i class="fas fa-copyright"></i></div>
+                    <div class="ip-text"><strong>宁夏大学</strong>, 马建军等. 宁夏区域医疗3D数据库后台接口软件 V1.0 [CP]. 著作权人之一, 2024.</div>
+                </div>
+                <div class="ip-item">
+                    <div class="ip-icon blue"><i class="fas fa-copyright"></i></div>
+                    <div class="ip-text"><strong>宁夏大学</strong>, 马建军等. 智慧旅游信息服务平台 V1.0 [CP]. 著作权人之一, 2025.7.</div>
+                </div>
+                <div class="ip-item">
+                    <div class="ip-icon blue"><i class="fas fa-copyright"></i></div>
+                    <div class="ip-text"><strong>马建军</strong>. 基于Flask的医疗患者信息管理系统 [CP]. 登记号: 2025SR1901605, 2025.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECTS -->
+        <section id="projects" class="section fade-in">
+            <div class="sec-header">
+                <span class="sec-num">04</span>
+                <h2 class="sec-title">项目经历</h2>
+                <div class="sec-line"></div>
+            </div>
+            <div class="timeline">
+
+                <div class="tl-item">
+                    <div class="tl-dot"></div>
+                    <div class="tl-card">
+                        <div class="tl-head">
+                            <div class="tl-title">基于信息几何的肿瘤生长多学科动态建模与精准定量研究</div>
+                            <span class="tl-badge">2026.02 — 至今</span>
+                        </div>
+                        <div class="tl-org"><i class="fas fa-university"></i> 校内自治区自然基金项目</div>
+                        <div class="tl-body">针对深度学习可解释性不足问题，引入肿瘤几何理论，将生长建模为统计流形上的动态趋势。负责基于肺部CT图像提取104维纹理特征，以Fisher信息矩阵构建图像统计流形，计算测地线与曲率分布。</div>
+                    </div>
+                </div>
+
+                <div class="tl-item">
+                    <div class="tl-dot"></div>
+                    <div class="tl-card">
+                        <div class="tl-head">
+                            <div class="tl-title">无人机 & 机库智慧巡检管理系统开发与关键算法研究</div>
+                            <span class="tl-badge">2026.01 — 2026.04</span>
+                        </div>
+                        <div class="tl-org"><i class="fas fa-building"></i> 校内横向项目</div>
+                        <div class="tl-body">开发一套「分类-预标-细化」半自动标注工具：利用CLIP模型场景分选，YOLO生成初步预测框，引入SAM提取目标掩码并反向修正边界框，标注效率提升5倍。</div>
+                    </div>
+                </div>
+
+                <div class="tl-item">
+                    <div class="tl-dot"></div>
+                    <div class="tl-card">
+                        <div class="tl-head">
+                            <div class="tl-title">全球沿海国家农作物产量与产值集成学习预测</div>
+                            <span class="tl-badge">2025.08 — 2025.11</span>
+                        </div>
+                        <div class="tl-org"><i class="fas fa-globe-asia"></i> 中山大学（深圳）生态经济课题组</div>
+                        <div class="tl-body">构建基于FAO多源农业数据的跨国家跨作物集成预测框架，设计两阶段缺失值填补策略，独立搭建多模型对比框架，通过加权集成完成最优模型筛选与预测分析。</div>
+                    </div>
+                </div>
+
+                <div class="tl-item">
+                    <div class="tl-dot"></div>
+                    <div class="tl-card">
+                        <div class="tl-head">
+                            <div class="tl-title">无人机管网巡检目标检测（YOLOv11m · 749km真实廊道）</div>
+                            <span class="tl-badge">2025 — 2026</span>
+                        </div>
+                        <div class="tl-org"><i class="fas fa-drone"></i> 第一作者 · 投稿 EAAI</div>
+                        <div class="tl-body">基于749km真实管道廊道构建自定义数据集，提出场景感知评估策略，使用YOLOv11m完成端到端管网巡检检测框架，投稿至 Engineering Applications of Artificial Intelligence (CAS Q1 TOP)。</div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- COURSEWORK -->
+        <section id="coursework" class="section fade-in">
+            <div class="sec-header">
+                <span class="sec-num">05</span>
+                <h2 class="sec-title">课程作业</h2>
+                <div class="sec-line"></div>
+            </div>
+            <div class="course-grid">
+
+                <div class="course-card">
+                    <div class="course-thumb">
+                        <img src="images/image3.png" class="course-img" alt="英语人 APP">
+                    </div>
+                    <div class="course-body">
+                        <div class="course-title">英语人 APP · 鸿蒙应用开发</div>
+                        <div class="course-desc">HarmonyOS手机+手表多端协同英语学习应用，集成艾宾浩斯遗忘曲线算法与Deepseek AI智能批改。</div>
+                        <div class="tech-tags">
+                            <span class="tech-tag">HarmonyOS</span>
+                            <span class="tech-tag">ArkTS</span>
+                            <span class="tech-tag">Python Flask</span>
+                            <span class="tech-tag">Deepseek API</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="course-card">
+                    <div class="course-thumb">
+                        <img src="images/image2.png" class="course-img" alt="模式识别">
+                    </div>
+                    <div class="course-body">
+                        <div class="course-title">智能图像处理工作站 · 模式识别/数字图像处理</div>
+                        <div class="course-desc">Photoshop风格专业系统，17模块161个功能，含车牌识别（93%准确率）与枸杞检测场景。</div>
+                        <div class="tech-tags">
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">PyQt5</span>
+                            <span class="tech-tag">OpenCV</span>
+                            <span class="tech-tag">深度学习</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="course-card">
+                    <div class="course-thumb">
+                        <img src="images/image.png" class="course-img" alt="电力负荷预测">
+                    </div>
+                    <div class="course-body">
+                        <div class="course-title">家庭能源消费短期预测 · 数据挖掘</div>
+                        <div class="course-desc">对比5种深度学习模型，BP-CNN-BiLSTM最优 R²=0.9938，蒙特卡洛Dropout不确定性量化覆盖率99.78%。</div>
+                        <div class="tech-tags">
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">CNN-LSTM</span>
+                            <span class="tech-tag">BiLSTM</span>
+                            <span class="tech-tag">时间序列</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- HONORS -->
+        <section id="honors" class="section fade-in">
+            <div class="sec-header">
+                <span class="sec-num">06</span>
+                <h2 class="sec-title">荣誉获奖</h2>
+                <div class="sec-line"></div>
+            </div>
+            <div class="honors-wrap">
+
+                <div class="honor-block">
+                    <div class="honor-block-title"><i class="fas fa-medal"></i> 综合荣誉</div>
+                    <div class="honor-item">
+                        <div class="honor-dot dot-gold"></div>
+                        <div class="honor-text"><strong>国家励志奖学金</strong> <span class="honor-year">2024 · 2025（连续两届）</span></div>
+                    </div>
+                    <div class="honor-item">
+                        <div class="honor-dot dot-gold"></div>
+                        <div class="honor-text"><strong>校级一等奖学金</strong> <span class="honor-year">2024 · 2025（连续两届）</span></div>
+                    </div>
+                    <div class="honor-item">
+                        <div class="honor-dot dot-green"></div>
+                        <div class="honor-text"><strong>宁夏大学三好学生</strong> <span class="honor-year">2024 · 2025（连续两届）</span></div>
+                    </div>
+                </div>
+
+                <div class="honor-block">
+                    <div class="honor-block-title"><i class="fas fa-trophy"></i> 竞赛获奖</div>
+                    <div class="honor-item">
+                        <div class="honor-dot dot-gold"></div>
+                        <div class="honor-text"><strong>全国大学生数学建模竞赛</strong> · 宁夏赛区三等奖 <span class="honor-year">2023 · 2024（连续两届）</span></div>
+                    </div>
+                    <div class="honor-item">
+                        <div class="honor-dot dot-green"></div>
+                        <div class="honor-text"><strong>亚太地区数学建模竞赛</strong> · 三等奖</div>
+                    </div>
+                    <div class="honor-item">
+                        <div class="honor-dot dot-blue"></div>
+                        <div class="honor-text"><strong>第十二届全国大数媒竞赛</strong> · 宁夏赛区三等奖（2项）</div>
+                    </div>
+                    <div class="honor-item">
+                        <div class="honor-dot dot-gold"></div>
+                        <div class="honor-text"><strong>全国大学生创新创业大赛</strong> · 省级奖项 <span class="honor-year">2025</span></div>
+                    </div>
+                    <div class="honor-item">
+                        <div class="honor-dot dot-blue"></div>
+                        <div class="honor-text"><strong>2026数智未来高质量数据集创新大赛</strong> · 三等奖</div>
+                    </div>
+                    <div class="honor-item">
+                        <div class="honor-dot dot-green"></div>
+                        <div class="honor-text"><strong>首届“挑战杯”大学生课外学术科技作品竞赛</strong> · 宁夏大学 二等奖/优秀奖 <span class="honor-year">2025</span></div>
+                    </div>
+                </div>
+
+                <div class="honor-block">
+                    <div class="honor-block-title"><i class="fas fa-hands-helping"></i> 实践与志愿服务</div>
+                    <div class="honor-item">
+                        <div class="honor-dot dot-green"></div>
+                        <div class="honor-text"><strong>宁夏大学暑期“三下乡”社会实践活动</strong> · 项目负责人 (准予结项) <span class="honor-year">2024.9</span></div>
+                    </div>
+                    <div class="honor-item">
+                        <div class="honor-dot dot-green"></div>
+                        <div class="honor-text"><strong>寒假“返家乡”社会实践活动</strong> · 优秀大学生 <span class="honor-year">2025.2</span></div>
+                    </div>
+                    <div class="honor-item">
+                        <div class="honor-dot dot-blue"></div>
+                        <div class="honor-text"><strong>宁夏沙坡头半程马拉松</strong> · 精英志愿者 / 优秀志愿者 <span class="honor-year">2024.9</span></div>
+                    </div>
+                    <div class="honor-item">
+                        <div class="honor-dot dot-blue"></div>
+                        <div class="honor-text"><strong>首届自然研学论坛</strong> · 宁夏大学前沿交叉学院 优秀志愿者 <span class="honor-year">2025.6</span></div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- GALLERY -->
+        <section id="gallery" class="section fade-in">
+            <div class="sec-header">
+                <span class="sec-num">07</span>
+                <h2 class="sec-title">生活记录</h2>
+                <div class="sec-line"></div>
+            </div>
+
+            <div class="gallery-grid">
+                <div class="polaroid">
+                    <img src="images/7fc79680082b0d58936fd4614faa908e.jpg" alt="生活记录">
+                </div>
+                <div class="polaroid">
+                    <img src="images/479afedb9aed02313826bb893a2739f5.jpg" alt="生活记录">
+                </div>
+                <div class="polaroid">
+                    <img src="images/3ba65ce8b79786070e2683bd6b247a39.jpg" alt="生活记录">
+                </div>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<button class="mob-btn" id="mobBtn"><i class="fas fa-bars"></i></button>
+
+<script src="js/script.js"></script>
+<script>
+// ── SIDEBAR ACTIVE ON SCROLL ──
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav a');
+
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+        if (e.isIntersecting) {
+            navLinks.forEach(a => a.classList.remove('active'));
+            const active = document.querySelector(`.nav a[href="#${e.target.id}"]`);
+            if (active) active.classList.add('active');
+        }
+    });
+}, { threshold: 0.35 });
+
+sections.forEach(s => observer.observe(s));
+
+// ── FADE IN ON SCROLL ──
+const fadeEls = document.querySelectorAll('.fade-in');
+const fadeObs = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+            setTimeout(() => e.target.classList.add('visible'), i * 80);
+            fadeObs.unobserve(e.target);
+        }
+    });
+}, { threshold: 0.1 });
+fadeEls.forEach(el => fadeObs.observe(el));
+
+// ── MOBILE MENU ──
+document.getElementById('mobBtn').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('open');
+});
+
+// ── ANTI-CRAWLER OBFUSCATION ──
+// 考验用户的简单防爬交互机制
+document.addEventListener('DOMContentLoaded', () => {
+    // 电话：页面直接显示出文本 "157-2953-chr(57)+chr(49)+chr(49)+chr(51)" 提示给用户
+    const phoneEl = document.getElementById('protect-phone');
+    if (phoneEl) {
+        phoneEl.textContent = "157-2953-chr(57)+chr(49)+chr(49)+chr(51)"; // 留给用户自己推算
+        // 为了防止被恶意点击，去掉了 href 行为，用户只能自己翻译后去拨打
+        phoneEl.style.pointerEvents = "none";
+        phoneEl.style.textDecoration = "none";
+        phoneEl.style.color = "var(--ink)"; // 防止链接变色
+    }
+
+    // 邮箱：根据要求恢复明文展示
+    const emailEl = document.getElementById('protect-email');
+    if (emailEl) {
+        emailEl.textContent = "majianjun@nxu.edu.cn";
+        emailEl.href = "mailto:majianjun@nxu.edu.cn"; // 恢复点击发邮件功能
+        emailEl.style.pointerEvents = "auto";
+        emailEl.style.textDecoration = "none";
+    }
+});
+</script>
+
+</body>
+</html>
