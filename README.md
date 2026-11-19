@@ -22,3 +22,7 @@ Profile and ACM publication details follow the owner’s confirmed information. 
 - images/: local assets.
 
 Published at https://mabayi.github.io/MAbayi-portfolio/
+
+## Academic layout revision
+
+White-background, compact academic homepage inspired by the information organization of Sergey Levine (https://people.eecs.berkeley.edu/~svlevine/), Jitendra Malik (https://people.eecs.berkeley.edu/~malik/), and Jean Oh (https://www.cs.cmu.edu/~jeanoh/). Original text and code; no copied biography or credentials. The owner’s two-paragraph biography leads the page alongside a small portrait. Research and publications use plain entries; the seven-frame personal gallery follows academic material.
