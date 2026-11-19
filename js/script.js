@@ -1,32 +1,17 @@
-// 平滑滚动
-document.querySelectorAll('.nav a').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-
-        // 移除所有active类
-        document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
-        // 添加当前active类
-        this.classList.add('active');
-
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-
-            // 移动端点击后自动关闭菜单
-            if (window.innerWidth <= 992) {
-                document.querySelector('.sidebar').classList.remove('open');
-            }
-        }
-    });
-});
-
-// 点击主内容区关闭移动端菜单
-document.querySelector('.main').addEventListener('click', () => {
-    if (window.innerWidth <= 992) {
-        document.querySelector('.sidebar').classList.remove('open');
-    }
-});
-
+'use strict';
+(() => {
+ const root=document.documentElement, toggle=document.getElementById('language-toggle'), menu=document.getElementById('menu-toggle'), sidebar=document.getElementById('sidebar'), dialog=document.getElementById('lightbox'), photos=[...document.querySelectorAll('.zoom')];
+ let currentPhoto=0, opener=null;
+ const descriptions={zh:'马建军，中南大学具身智能专业硕士研究生。研究多模态大模型、具身智能、遥感视觉理解与无人机目标检索。',en:'Jianjun Ma, master’s student in Embodied Intelligence at Central South University. Research in multimodal large models, embodied intelligence, remote sensing, and UAV target retrieval.'};
+ function showPhoto(index){currentPhoto=(index+photos.length)%photos.length;const source=photos[currentPhoto],caption=source.dataset[root.dataset.language],image=document.getElementById('large-photo');image.src=source.href;image.alt=caption;document.getElementById('photo-caption').textContent=`${caption} · ${currentPhoto+1} / ${photos.length}`;}
+ function setLanguage(language){const lang=language==='en'?'en':'zh';root.dataset.language=lang;root.lang=lang==='zh'?'zh-CN':'en';document.title=lang==='zh'?'马建军 Jianjun Ma · 具身智能与多模态研究':'Jianjun Ma · Embodied Intelligence & Multimodal Research';document.querySelector('meta[name="description"]').content=descriptions[lang];document.querySelector('meta[property="og:title"]').content=document.title;document.querySelector('meta[property="og:description"]').content=descriptions[lang];document.querySelector('meta[property="og:locale"]').content=lang==='zh'?'zh_CN':'en_US';document.querySelector('meta[property="og:locale:alternate"]').content=lang==='zh'?'en_US':'zh_CN';toggle.setAttribute('aria-label',lang==='zh'?'Switch to English':'切换为中文');document.querySelectorAll('[data-alt-zh]').forEach(el=>el.alt=el.dataset[lang==='zh'?'altZh':'altEn']);document.querySelectorAll('[data-label-zh]').forEach(el=>el.setAttribute('aria-label',el.dataset[lang==='zh'?'labelZh':'labelEn']));photos.forEach(el=>el.setAttribute('aria-label',`${lang==='zh'?'放大：':'Enlarge: '}${el.dataset[lang]}`));if(dialog.open)showPhoto(currentPhoto);try{localStorage.setItem('portfolio-language',lang);}catch(_){} }
+ let initial='zh';try{initial=localStorage.getItem('portfolio-language')||'zh';}catch(_){}setLanguage(initial);toggle.hidden=false;toggle.addEventListener('click',()=>setLanguage(root.dataset.language==='zh'?'en':'zh'));
+ function closeMenu(returnFocus=false){sidebar.classList.remove('open');menu.setAttribute('aria-expanded','false');if(returnFocus)menu.focus();}
+ menu.addEventListener('click',()=>{const open=sidebar.classList.toggle('open');menu.setAttribute('aria-expanded',String(open));if(open)toggle.focus();});
+ document.querySelectorAll('nav a').forEach(link=>link.addEventListener('click',()=>closeMenu()));document.addEventListener('click',event=>{if(!sidebar.contains(event.target)&&!menu.contains(event.target))closeMenu();});
+ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&sidebar.classList.contains('open'))closeMenu(true);if(!dialog.open)return;if(event.key==='ArrowLeft'){event.preventDefault();showPhoto(currentPhoto-1);}if(event.key==='ArrowRight'){event.preventDefault();showPhoto(currentPhoto+1);}});
+ matchMedia('(min-width: 801px)').addEventListener('change',()=>closeMenu());
+ photos.forEach((link,index)=>link.addEventListener('click',event=>{if(typeof dialog.showModal!=='function')return;event.preventDefault();opener=link;showPhoto(index);dialog.showModal();}));
+ document.getElementById('close-photo').addEventListener('click',()=>dialog.close());document.getElementById('previous-photo').addEventListener('click',()=>showPhoto(currentPhoto-1));document.getElementById('next-photo').addEventListener('click',()=>showPhoto(currentPhoto+1));dialog.addEventListener('close',()=>opener?.focus());dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close();});
+ if('IntersectionObserver' in window){const links=[...document.querySelectorAll('nav a')];const observer=new IntersectionObserver(entries=>{const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top);if(!visible.length)return;links.forEach(a=>{if(a.hash===`#${visible[0].target.id}`)a.setAttribute('aria-current','location');else a.removeAttribute('aria-current');});},{rootMargin:'-10% 0px -50% 0px'});document.querySelectorAll('section[id]').forEach(s=>observer.observe(s));}
+})();
